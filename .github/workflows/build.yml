@@ -1,0 +1,56 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  EXECUTABLE_NAME: wenku8_crawler
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build on ${{ matrix.target_os_name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            target_os_name: windows_x64
+            executable_pattern: .exe
+          - os: windows-11-arm
+            target_os_name: windows_arm64
+            executable_pattern: .exe
+          - os: ubuntu-latest
+            target_os_name: linux_x64
+            executable_pattern:
+          - os: ubuntu-24.04-arm
+            target_os_name: linux_arm64
+            executable_pattern:
+          - os: macos-13
+            target_os_name: macos_x64
+            executable_pattern:
+          - os: macos-latest
+            target_os_name: macos_arm64
+            executable_pattern:
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Build
+        shell: bash
+        run: cargo build --release
+
+      - name: Rename Artifact
+        run: mv target/release/${{ env.EXECUTABLE_NAME }}${{ matrix.executable_pattern }} target/release/${{ env.EXECUTABLE_NAME }}-${{ github.ref_name }}-${{ matrix.target_os_name }}${{ matrix.executable_pattern }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.EXECUTABLE_NAME }}-${{ matrix.target_os_name }}
+          path: target/release/${{ env.EXECUTABLE_NAME }}-${{ github.ref_name }}-${{ matrix.target_os_name }}${{ matrix.executable_pattern }}

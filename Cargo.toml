@@ -1,0 +1,21 @@
+[package]
+name = "wenku8_crawler"
+version = "0.1.0"
+edition = "2024"
+authors = ["ArkDra", "ArkDra <arkdra@qq.com>"]
+
+[dependencies]
+rayon = { version = "1.10.0" }
+reqwest = { version = "0.12.15", default-features = false, features = [
+    "charset",
+    "rustls-tls",
+    "blocking",
+] }
+rusqlite = { version = "0.34.0", features = ["bundled"] }
+rustls = { version = "0.23.26", default-features = false }
+scraper = { version = "0.23.1" }
+toml = { version = "0.8.20" }
+
+[profile.release]
+strip = true
+lto = true

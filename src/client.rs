@@ -40,7 +40,7 @@ pub fn build_client() -> Result<Client> {
     let client = Client::builder()
         .default_headers(headers)
         .timeout(Duration::from_secs(60))
-        .use_rustls_tls()
+        .use_native_tls()
         .build()?;
     return Ok(client);
 }

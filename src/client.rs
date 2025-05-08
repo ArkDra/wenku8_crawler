@@ -25,10 +25,13 @@ fn import_account() -> Result<String> {
 fn get_cookies() -> Result<String> {
     let account = Table::from_str(import_account()?.as_str())?;
     let cookies = format!(
-        "jieqiUserInfo={}",
+        "jieqiUserInfo={}; PHPSESSID={}",
         account["jieqiUserInfo"]
             .as_str()
-            .ok_or("Failed to parse jieqiUserInfo")?
+            .ok_or("Failed to parse jieqiUserInfo")?,
+        account["PHPSESSID"]
+            .as_str()
+            .ok_or("Failed to parse PHPSESSID")?,    
     );
     Ok(cookies)
 }
